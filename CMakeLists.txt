@@ -414,6 +414,7 @@ ADD_LIBRARY (FreeImage SHARED ${BUNDLE_LIB_MODIFIER} ${png_files} ${zlib_files} 
 TARGET_LINK_LIBRARIES( FreeImage
 		${PNG_LIBRARIES}
 )
+apply_preprocessor_definitions (FreeImage)
 
 FILE(GLOB freeimage_headers ${FREEIMAGE_DIR}/Source/*.h)
 FILE(GLOB fip_headers ${FREEIMAGE_DIR}/Wrapper/FreeImagePlus/*.h)
@@ -431,6 +432,7 @@ LIST(REMOVE_ITEM freeimage_plus_files "${FREEIMAGE_DIR}/Wrapper/FreeImagePlus/sr
 
 ADD_LIBRARY (FreeImagePlus SHARED ${BUNDLE_LIB_MODIFIER} ${freeimage_plus_files})
 TARGET_LINK_LIBRARIES(FreeImagePlus FreeImage)
+apply_preprocessor_definitions (FreeImagePlus)
 
 INSTALL(TARGETS FreeImagePlus
 		ARCHIVE DESTINATION  "${TRERDP_ROOT}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
