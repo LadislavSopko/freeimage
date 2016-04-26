@@ -55,6 +55,7 @@ if (CMAKE_SIZEOF_VOID_P EQUAL 8)
 	
 	# All configurations.
 	set (preprocessor_definitions_common
+		WIN32
 		_WIN64
 		_CRT_SECURE_NO_WARNINGS
 		_CRT_NONSTDC_NO_DEPRECATE
@@ -72,6 +73,7 @@ if (CMAKE_SIZEOF_VOID_P EQUAL 8)
 else()
 	# All configurations.
 	set (preprocessor_definitions_common
+		WIN32
 		_USE_32BIT_TIME_T
 		_CRT_SECURE_NO_WARNINGS
 		_CRT_NONSTDC_NO_DEPRECATE

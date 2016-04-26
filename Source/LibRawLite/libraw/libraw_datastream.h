@@ -37,7 +37,7 @@ it under the terms of the one of three licenses as you choose:
 #include <fstream>
 #include <memory>
 
-#if defined (WIN32)
+#if defined (WIN32) || defined(_WIN64)
 #include <winsock2.h>
 
 /* MSVS 2008 and above... */
