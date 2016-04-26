@@ -60,7 +60,7 @@
 
 //================================================================
 //#ifdef WIN32
-#if defined(WIN32) && !defined(UNDER_CE)   // WIN32 seems to be defined always in VS2005 for ARM platform
+#if defined(WIN32) && !defined(UNDER_CE) && !defined(_WIN64)  // WIN32 seems to be defined always in VS2005 for ARM platform
 #define PLATFORM_X86
 #include "../x86/x86.h"
 #endif
@@ -77,6 +77,11 @@
 #ifdef __ANSI__
 #define PLATFORM_ANSI
 #include "ansi.h"
+#endif
+
+#if defined(WIN32) && !defined(UNDER_CE) && defined(_WIN64) 
+	typedef uintptr_t UINTPTR_T;
+	typedef intptr_t INTPTR_T;
 #endif
 
 //================================================================

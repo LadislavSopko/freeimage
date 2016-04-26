@@ -1,5 +1,20 @@
 ####### FREEIMAGE
 PROJECT(FreeImage)
+## Minimum required version of CMake to configure the project
+cmake_minimum_required (VERSION 2.8)
+
+## Enforced CMake policy
+cmake_policy (VERSION 2.8)
+
+
+set (TRERDP_ROOT "C:/TRERDP_vc14/xw-3rdp")
+set (FREEIMAGE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set (ZLIB_ROOT "${TRERDP_ROOT}")
+
+include( cmake/FindPNG.cmake )
+link_directories("${TRERDP_ROOT}/lib")
+
+
 ADD_DEFINITIONS("-D_CRT_SECURE_NO_DEPRECATE")
 ADD_DEFINITIONS("-D_CRT_NONSTDC_NO_WARNINGS")
 ADD_DEFINITIONS("-DFREEIMAGE_EXPORTS")
@@ -18,12 +33,16 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   LINK_LIBRARIES(Ws2_32)
 ENDIF()
 
-IF(NOT BUNDLE_SHARED_LIBRARIES)
-ADD_DEFINITIONS("-DFREEIMAGE_LIB")
-ENDIF()
+#IF(NOT BUNDLE_SHARED_LIBRARIES)
+#ADD_DEFINITIONS("-DFREEIMAGE_LIB")
+#ENDIF()
 
-INCLUDE_DIRECTORIES(${LIBPNG_DIR})
-INCLUDE_DIRECTORIES(${ZLIB_DIR})
+find_package(zlib)
+
+include_directories (${ZLIB_INCLUDE_DIR})
+
+#INCLUDE_DIRECTORIES(${LIBPNG_DIR})
+#INCLUDE_DIRECTORIES(${ZLIB_DIR})
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/librawlite)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/OpenEXR/Imath)
@@ -33,9 +52,9 @@ INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/OpenEXR/IexMath)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/OpenEXR/half)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/OpenEXR/IlmThread)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/OpenEXR/)
-INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/jxrgluelib)
-INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/common/include)
-INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/image/sys)
+#INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/jxrgluelib)
+#INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/common/include)
+#INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/image/sys)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJPEG)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Wrapper/FreeImagePlus/)
 
@@ -54,7 +73,7 @@ LIST(APPEND libraw_files ${FREEIMAGE_DIR}/Source/LibRawLite/internal/demosaic_pa
 FILE(GLOB libtiff_files ${FREEIMAGE_DIR}/Source/LibTIFF4/*.c)
 FILE(GLOB metadata_files ${FREEIMAGE_DIR}/Source/metadata/*.cpp)
 FILE(GLOB_RECURSE openexr_files ${FREEIMAGE_DIR}/Source/OpenEXR/*.cpp)
-FILE(GLOB_RECURSE jxr_files ${FREEIMAGE_DIR}/Source/LibJXR/*.c)
+#FILE(GLOB_RECURSE jxr_files ${FREEIMAGE_DIR}/Source/LibJXR/*.c)
 FILE(GLOB_RECURSE webp_files ${FREEIMAGE_DIR}/Source/LibWebP/*.c)
 
 LIST(REMOVE_ITEM zlib_files "${ZLIB_DIR}/example.c")
@@ -85,35 +104,42 @@ LIST(REMOVE_ITEM openexr_files "${FREEIMAGE_DIR}/Source/OpenEXR/IlmThread/IlmThr
 LIST(REMOVE_ITEM openexr_files "${FREEIMAGE_DIR}/Source/OpenEXR/Half/eLut.cpp")
 LIST(REMOVE_ITEM openexr_files "${FREEIMAGE_DIR}/Source/OpenEXR/Half/toFloat.cpp")
 LIST(REMOVE_ITEM openexr_files "${FREEIMAGE_DIR}/Source/OpenEXR/IlmImf/b44ExpLogTable.cpp")
+LIST(REMOVE_ITEM freeimage_files "${FREEIMAGE_DIR}/Source/FreeImage/PluginJXR.cpp")
 
 
 
-ADD_LIBRARY (FreeImage ${BUNDLE_LIB_MODIFIER} ${png_files} ${zlib_files} ${deprecation_files} 
+ADD_LIBRARY (FreeImage SHARED ${BUNDLE_LIB_MODIFIER} ${png_files} ${zlib_files} ${deprecation_files} 
 			${freeimage_files} ${freeimage_c_files} ${freeimagetoolkit_files} ${freeimagelib_files} ${libjpeg_files}
 			${libmng_files} ${libopenjpeg_files} ${libraw_files}
-			${libtiff_files} ${metadata_files} ${openexr_files} ${jxr_files} ${webp_files}
+			${libtiff_files} ${metadata_files} ${openexr_files} 
+			#${jxr_files} 
+			${webp_files}
 			)
+			
+TARGET_LINK_LIBRARIES( FreeImage
+		${PNG_LIBRARIES}
+)
 
 FILE(GLOB freeimage_headers ${FREEIMAGE_DIR}/Source/*.h)
 FILE(GLOB fip_headers ${FREEIMAGE_DIR}/Wrapper/FreeImagePlus/*.h)
-INSTALL(FILES ${fip_headers} ${freeimage_headers} DESTINATION ${OCE_WIN_BUNDLE_INSTALL_DIR}/include/FreeImage)
+INSTALL(FILES ${fip_headers} ${freeimage_headers} DESTINATION ${TRERDP_ROOT}/include/FreeImage)
 
 INSTALL(TARGETS FreeImage
-		ARCHIVE DESTINATION  "${OCE_WIN_BUNDLE_INSTALL_DIR_BITS}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
-		LIBRARY DESTINATION  "${OCE_WIN_BUNDLE_INSTALL_DIR_BITS}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
-		RUNTIME DESTINATION  "${OCE_WIN_BUNDLE_INSTALL_DIR_BITS}/bin/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
+		ARCHIVE DESTINATION  "${TRERDP_ROOT}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
+		LIBRARY DESTINATION  "${TRERDP_ROOT}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
+		RUNTIME DESTINATION  "${TRERDP_ROOT}/bin/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
 		)
 
 # FreeImagePlus
 FILE(GLOB freeimagelib_files ${FREEIMAGE_DIR}/Source/FreeImageLib/*.cpp)
 LIST(REMOVE_ITEM freeimage_plus_files "${FREEIMAGE_DIR}/Wrapper/FreeImagePlus/src/FreeImagePlus.cpp")
 
-ADD_LIBRARY (FreeImagePlus ${BUNDLE_LIB_MODIFIER} ${freeimage_plus_files})
+ADD_LIBRARY (FreeImagePlus SHARED ${BUNDLE_LIB_MODIFIER} ${freeimage_plus_files})
 TARGET_LINK_LIBRARIES(FreeImagePlus FreeImage)
 
 INSTALL(TARGETS FreeImagePlus
-		ARCHIVE DESTINATION  "${OCE_WIN_BUNDLE_INSTALL_DIR_BITS}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
-		LIBRARY DESTINATION  "${OCE_WIN_BUNDLE_INSTALL_DIR_BITS}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
-		RUNTIME DESTINATION  "${OCE_WIN_BUNDLE_INSTALL_DIR_BITS}/bin/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
+		ARCHIVE DESTINATION  "${TRERDP_ROOT}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
+		LIBRARY DESTINATION  "${TRERDP_ROOT}/lib/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
+		RUNTIME DESTINATION  "${TRERDP_ROOT}/bin/" CONFIGURATIONS Debug Release MinSizeRel RelWithDebInfo
 		)
 		
