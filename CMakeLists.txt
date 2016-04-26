@@ -7,7 +7,7 @@ cmake_minimum_required (VERSION 2.8)
 cmake_policy (VERSION 2.8)
 
 
-set (TRERDP_ROOT "C:/TRERDP_vc14/xw-3rdp")
+set (TRERDP_ROOT "${CMAKE_INSTALL_PREFIX}")
 set (FREEIMAGE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set (ZLIB_ROOT "${TRERDP_ROOT}")
 
