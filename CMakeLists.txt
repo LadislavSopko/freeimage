@@ -327,7 +327,7 @@ link_directories("${TRERDP_ROOT}/lib")
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
-  LINK_LIBRARIES(Ws2_32)
+  #LINK_LIBRARIES(Ws2_32)
 ENDIF()
 
 #IF(NOT BUNDLE_SHARED_LIBRARIES)
@@ -336,7 +336,7 @@ ENDIF()
 
 find_package(zlib)
 
-include_directories (${ZLIB_INCLUDE_DIR})
+
 
 #INCLUDE_DIRECTORIES(${LIBPNG_DIR})
 #INCLUDE_DIRECTORIES(${ZLIB_DIR})
@@ -354,6 +354,9 @@ INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/OpenEXR/)
 #INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJXR/image/sys)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Source/LibJPEG)
 INCLUDE_DIRECTORIES(${FREEIMAGE_DIR}/Wrapper/FreeImagePlus/)
+
+## must be last due to possible include clash with mysql/plugin.h !!!!!!
+include_directories (${ZLIB_INCLUDE_DIR})
 
 FILE(GLOB png_files ${LIBPNG_DIR}/*.c)
 FILE(GLOB zlib_files ${ZLIB_DIR}/*.c)
