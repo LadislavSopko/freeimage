@@ -127,7 +127,7 @@ else ()
         ${compiler_flags_common}
         /W3                                 # Treat Warnings 3
 		/WX-
-		/Zp4
+		#/Zp8
     )
 endif ()
 
@@ -147,7 +147,7 @@ if (CMAKE_SIZEOF_VOID_P EQUAL 8)
     )
 else ()
     set (compiler_flags_debug
-        /ZI                                 # set Debug Information Format to Program Database for Edit & Continue
+        /Zi                                 # set Debug Information Format to Program Database for Edit & Continue
 		-wd4820 -wd4668 -wd4121 -wd4100 -wd4640 -wd4127 -wd4710 -wd4548 -wd4480 -wd4505 -wd4201 -wd4512 -wd4189 -wd4706 
     )
 endif ()
@@ -155,6 +155,7 @@ endif ()
 set (compiler_flags_debug
     ${compiler_flags_debug}
     /MDd                                    # set Runtime Library to Multi-threaded Debug DLL
+	/EHsc
 )
 
 # Release configuration.
