@@ -5387,6 +5387,10 @@ void CLASS median_filter()
   }
 }
 
+#ifdef _WIN32
+// fix crash CL on MSVC2017
+#	pragma optimize( "t", off )
+#endif
 void CLASS blend_highlights()
 {
   int clip=INT_MAX, row, col, c, i, j;
@@ -5431,6 +5435,9 @@ void CLASS blend_highlights()
   RUN_CALLBACK(LIBRAW_PROGRESS_HIGHLIGHTS,1,2);
 #endif
 }
+#ifdef _WIN32
+#	pragma optimize( "t", on ) 
+#endif
 
 #define SCALE (4 >> shrink)
 void CLASS recover_highlights()

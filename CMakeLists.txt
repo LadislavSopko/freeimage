@@ -255,15 +255,15 @@ set (preprocessor_definitions_release
 # A convenience macro to apply the preprocessor definitions to all configurations of a given target.
 macro (apply_preprocessor_definitions target)
     set_property (TARGET ${target} APPEND PROPERTY
-        #  COMPILE_DEFINITIONS_DEBUG ${preprocessor_definitions_debug}
         COMPILE_DEFINITIONS $<$<CONFIG:Debug>:${preprocessor_definitions_debug}>
     )
     set_property (TARGET ${target} APPEND PROPERTY
-        # COMPILE_DEFINITIONS_RELEASE ${preprocessor_definitions_release}
         COMPILE_DEFINITIONS $<$<CONFIG:Release>:${preprocessor_definitions_release}>
-    )    
+    )  
+	set_property (TARGET ${target} APPEND PROPERTY
+        COMPILE_DEFINITIONS $<$<CONFIG:RelWithDebInfo>:${preprocessor_definitions_release}>
+    ) 
 endmacro ()
-
 
 #--------------------------------------------------------------------------------------------------
 # Compilation/linking flags.
@@ -319,6 +319,11 @@ convert_list_to_string (CMAKE_SHARED_LINKER_FLAGS_DEBUG "${shared_lib_linker_fla
 convert_list_to_string (CMAKE_CXX_FLAGS_RELEASE "${compiler_flags_release}")
 convert_list_to_string (CMAKE_EXE_LINKER_FLAGS_RELEASE "${exe_linker_flags_release}")
 convert_list_to_string (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${shared_lib_linker_flags_release}")
+
+# Apply Release configuration compilation/linking flags.
+convert_list_to_string (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${compiler_flags_release}")
+convert_list_to_string (CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "${exe_linker_flags_release}")
+convert_list_to_string (CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO "${shared_lib_linker_flags_release}")
 
 
 
